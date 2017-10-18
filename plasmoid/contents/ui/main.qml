@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import QtQuick.Layouts 1.1
 
@@ -7,6 +7,7 @@ Item {
 
     Layout.minimumWidth: main_column.width
     Layout.minimumHeight: main_column.height
+    height: main_column.height
 
 
     Timer {
@@ -112,16 +113,20 @@ Item {
     Column {
         id: main_column
 
+        spacing: 5
+
         Row {
-            spacing: 10
+            spacing: 3
 
             PlasmaComponents.Label {
                 id: base
                 text: market.display_base + '-' + market.display_target
+
+                font.weight: Font.Bold
             }
 
             PlasmaComponents.Label {
-                text: "-"
+                text: "|"
             }
 
             PlasmaComponents.Label {
@@ -133,6 +138,8 @@ Item {
         Row {
             spacing: 10
 
+            height: value_metrics.tightBoundingRect.height
+
             PlasmaComponents.Label {
                 id: value
                 text: Number(market_value.last)
@@ -140,21 +147,42 @@ Item {
                     .toLocaleString()
 
                 font.pointSize: 24
+
+                height: parent.height
+
+                TextMetrics {
+                    id: value_metrics
+                    font: value.font
+                    text: value.text
+                }
             }
 
-            PlasmaComponents.Label {
-                id: change
-                color: market_value.day_change > 0
-                        ? "#090"
-                        : market_value.day_change < 0
-                            ? "#900"
-                            : "#666"
-                text: Number(market_value.day_change)
-                        .toFixed(2)
-                        .toLocaleString() + "%"
 
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
+
+            Column {
+                height: parent.height
+                spacing: 0
+
+                PlasmaComponents.Label {
+                    text: market.display_base
+                    font.pointSize: parent.height * 3 / 5
+                    height: parent.height * 3 / 5
+                }
+
+                PlasmaComponents.Label {
+
+                    id: change
+                    color: market_value.day_change > 0
+                            ? "#090"
+                            : market_value.day_change < 0
+                                ? "#900"
+                                : "#666"
+                    text: Number(market_value.day_change)
+                            .toFixed(2)
+                            .toLocaleString() + "%"
+
+                    height: parent.height * 2 / 5
+                }
             }
         }
 

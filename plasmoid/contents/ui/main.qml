@@ -13,7 +13,10 @@ Item {
         running: true
         triggeredOnStart: true
         interval: 5000
+        repeat: true
         onTriggered: function () {
+            console.log('Doing request');
+
             var exchange = market_functions.markets[market.exchange];
             var url = exchange.url.replace('{}', market.base + '-' + market.target)
 
@@ -33,6 +36,10 @@ Item {
             var xhr = new XMLHttpRequest();
 
             xhr.onreadystatechange = function() {
+                if (xhr.readyState !== XMLHttpRequest.DONE) {
+                    return;
+                }
+
                 if (xhr.status == 200) {
                    return options.success(xhr.responseText);
                 }
@@ -70,6 +77,13 @@ Item {
                     market_value.high = data.result[0].High
                     market_value.low = data.result[0].Low
                     market_value.last_day = data.result[0].PrevDay
+
+                    market.display_exchange = "Bittrex"
+
+                    var market_name = data.result[0].MarketName.split('-')
+
+                    market.display_base = market_name[0]
+                    market.display_target = market_name[1]
                 }
             }
         }
@@ -77,17 +91,21 @@ Item {
 
     QtObject {
         id: market
-        property string base: "BTC"
-        property string target: "ETH"
-        property string exchange: "Bittrex"
+        property string base: plasmoid.configuration.base || "BTC"
+        property string target: plasmoid.configuration.target || "ETH"
+        property string exchange: plasmoid.configuration.exchange || "Bittrex"
+        property string display_base: ""
+        property string display_target: ""
+        property string display_exchange: ""
     }
 
     QtObject {
         id: market_value
-        property double last: 1000.0
-        property double high: 1001.0
-        property double low: 999.0
-        property double last_day: 999.0
+        property double last: 0.0
+        property double high: 0.1
+        property double low: 0.0
+        property double last_day: 0.1
+        property double day_change: (market_value.last - market_value.last_day)/market_value.last
 
     }
 
@@ -99,17 +117,16 @@ Item {
 
             PlasmaComponents.Label {
                 id: base
-                text: market.base
+                text: market.display_base + '-' + market.display_target
             }
 
             PlasmaComponents.Label {
-                id: target
-                text: market.target
+                text: "-"
             }
 
             PlasmaComponents.Label {
                 id: exchange
-                text: market.exchange
+                text: market.display_exchange
             }
         }
 
@@ -118,14 +135,21 @@ Item {
 
             PlasmaComponents.Label {
                 id: value
-                text: Number(market_value.last).toLocaleString()
+                text: Number(market_value.last)
+                    .toFixed(8)
+                    .toLocaleString()
 
                 font.pointSize: 24
             }
 
             PlasmaComponents.Label {
                 id: change
-                text: Number(market_value.last / market_value.last_day)
+                color: market_value.day_change > 0
+                        ? "#090"
+                        : market_value.day_change < 0
+                            ? "#900"
+                            : "#666"
+                text: Number(market_value.day_change)
                         .toFixed(2)
                         .toLocaleString() + "%"
 

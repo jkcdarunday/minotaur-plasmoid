@@ -13,7 +13,7 @@ Item {
     Timer {
         running: true
         triggeredOnStart: true
-        interval: 5000
+        interval: 30000
         repeat: true
         onTriggered: function () {
             console.log('Doing request');

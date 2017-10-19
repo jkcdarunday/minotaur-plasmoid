@@ -165,7 +165,7 @@ Item {
 
                 PlasmaComponents.Label {
                     text: market.display_base
-                    font.pointSize: parent.height * 3 / 5
+                    font.pixelSize: parent.height * 3 / 5
                     height: parent.height * 3 / 5
                 }
 
@@ -180,7 +180,7 @@ Item {
                     text: Number(market_value.day_change)
                             .toFixed(2)
                             .toLocaleString() + "%"
-
+                    font.pixelSize: parent.height * 2 / 5
                     height: parent.height * 2 / 5
                 }
             }

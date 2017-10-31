@@ -1,22 +1,16 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.1
+import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import QtQuick.Layouts 1.1
 
 Item {
     Layout.fillWidth: true
 
-    property string base_currency: "BTC"
-    property string target_currency: "MTL"
-    property string exchange: "Bittrex"
+    property string cfg_exchange: "Bittrex"
 
-    Component.onCompleted: function() {
-        base_currency = plasmoid.configuration.base
-        target_currency = plasmoid.configuration.target
-        exchange = plasmoid.configuration.exchange
-
-        console.log('Loaded config page');
-    }
+    property alias cfg_base: base_field.text
+    property alias cfg_target: target_field.text
 
     Grid {
         Layout.fillWidth: true
@@ -27,13 +21,11 @@ Item {
         }
 
         PlasmaComponents.TextField {
+            id: base_field
+
             placeholderText: "BTC"
 
             text: base_currency
-
-            onTextChanged: function() {
-                plasmoid.configuration.base = this.text
-            }
         }
 
         PlasmaComponents.Label {
@@ -41,13 +33,11 @@ Item {
         }
 
         PlasmaComponents.TextField {
+            id: target_field
+
             placeholderText: "MTL"
 
             text: target_currency
-
-            onTextChanged: function() {
-                plasmoid.configuration.target = this.text
-            }
         }
 
         PlasmaComponents.Label {
@@ -62,11 +52,7 @@ Item {
             }
 
             currentIndex: function() {
-                return this.find(exchange);
-            }
-
-            onCurrentTextChanged: function() {
-                plasmoid.configuration.exchange = this.currentText
+                return this.find(cfg_exchange);
             }
         }
     }

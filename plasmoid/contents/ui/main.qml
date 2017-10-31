@@ -9,26 +9,44 @@ Item {
     Layout.minimumHeight: main_column.height
     height: main_column.height
 
+    Connections {
+        target: plasmoid.configuration
+        onExchangeChanged: configChanged()
+        onTargetChanged: configChanged()
+        onBaseChanged: configChanged()
+
+        function configChanged () {
+            retriever.restart()
+        }
+    }
+
+    Component.onCompleted: function () {
+        last_update.default_color = last_update.color
+
+        retriever.start()
+    }
+
 
     Timer {
-        running: true
-        triggeredOnStart: true
-        interval: 30000
+        id: retriever
+
+        running: false
+        triggeredOnStart: false
+        interval: 5000
         repeat: true
         onTriggered: function () {
-            console.log('Doing request');
-
             var exchange = market_functions.markets[market.exchange];
             var url = exchange.url.replace('{}', market.base + '-' + market.target)
 
 
-            console.log(url);
+            console.log('Doing request: ', url);
 
             request({
                 url: url,
                 success: exchange.parser,
                 error: function(error) {
                     console.log('Retrieval returned error:', error)
+                    last_update.color = '#F00'
                 }
             });
         }
@@ -78,6 +96,9 @@ Item {
                     market_value.high = data.result[0].High
                     market_value.low = data.result[0].Low
                     market_value.last_day = data.result[0].PrevDay
+                    market_value.last_update = new Date().toLocaleTimeString()
+
+                    last_update.color = last_update.default_color
 
                     market.display_exchange = "Bittrex"
 
@@ -107,6 +128,7 @@ Item {
         property double low: 0.0
         property double last_day: 0.1
         property double day_change: (market_value.last - market_value.last_day)/market_value.last
+        property string last_update: ""
 
     }
 
@@ -132,6 +154,17 @@ Item {
             PlasmaComponents.Label {
                 id: exchange
                 text: market.display_exchange
+            }
+
+            PlasmaComponents.Label {
+                text: "|"
+            }
+
+            PlasmaComponents.Label {
+                id: last_update
+                text: market_value.last_update
+
+                property string default_color: ""
             }
         }
 

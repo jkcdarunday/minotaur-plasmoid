@@ -31,8 +31,8 @@ Item {
         id: retriever
 
         running: false
-        triggeredOnStart: false
-        interval: 5000
+        triggeredOnStart: true
+        interval: 10000
         repeat: true
         onTriggered: function () {
             var exchange = market_functions.markets[market.exchange];
@@ -175,8 +175,10 @@ Item {
 
             PlasmaComponents.Label {
                 id: value
-                text: Number(market_value.last)
-                    .toFixed(8)
+                text: market_value.last
+                    .toFixed(
+                        Math.max(9 - market_value.last.toFixed(0).length, 0)
+                    )
                     .toLocaleString()
 
                 font.pointSize: 24

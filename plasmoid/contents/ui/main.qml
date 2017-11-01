@@ -127,7 +127,7 @@ Item {
         property double high: 0.1
         property double low: 0.0
         property double last_day: 0.1
-        property double day_change: (market_value.last - market_value.last_day)/market_value.last
+        property double day_change: 100.0*(market_value.last - market_value.last_day)/market_value.last
         property string last_update: ""
 
     }

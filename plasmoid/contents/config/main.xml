@@ -18,5 +18,9 @@
       <label>Exchange</label>
       <default>Bittrex</default>
     </entry>
+    <entry name="orderbook" type="Bool">
+      <label>Show Order Book</label>
+      <default>false</default>
+    </entry>
   </group>
 </kcfg>

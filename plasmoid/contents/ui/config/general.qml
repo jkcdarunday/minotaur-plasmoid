@@ -11,6 +11,7 @@ Item {
 
     property alias cfg_base: base_field.text
     property alias cfg_target: target_field.text
+    property alias cfg_orderbook: show_orderbook.checked
 
     Grid {
         Layout.fillWidth: true
@@ -54,6 +55,14 @@ Item {
             currentIndex: function() {
                 return this.find(cfg_exchange);
             }
+        }
+
+        PlasmaComponents.Label {
+            text: "Show Orderbook"
+        }
+
+        PlasmaComponents.CheckBox {
+            id: show_orderbook;
         }
     }
 }

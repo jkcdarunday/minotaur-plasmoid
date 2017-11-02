@@ -135,6 +135,8 @@ Item {
     Column {
         id: main_column
 
+        opacity: mouse_sensor.pressed ? 0.1 : 1
+
         spacing: 5
 
         Row {
@@ -234,5 +236,22 @@ Item {
                 text: "H:" + market_value.high
             }
         }
+    }
+
+    OrderBook {
+        id: orderbook
+
+        width: 100
+        anchors.fill: parent
+        z: -1
+
+        visible: plasmoid.configuration.orderbook
+        opacity: mouse_sensor.pressed ? 1 : 0.4
+    }
+
+    MouseArea {
+        id: mouse_sensor
+
+        anchors.fill: parent
     }
 }

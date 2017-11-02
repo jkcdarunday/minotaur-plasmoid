@@ -29,9 +29,6 @@ Item {
                 }
 
                 if(data.success && data.result) {
-                    Lodash._.orderBy(data.result.buy, 'Rate', 'desc')
-                    Lodash._.orderBy(data.result.sell, 'Rate', 'asc')
-
                     var min_quantity = Infinity, max_quantity = 0
                     var min_rate = Infinity, max_rate = 0
 
@@ -49,12 +46,11 @@ Item {
                         min_quantity = Math.min(total, min_quantity);
                         max_quantity = Math.max(total, max_quantity);
 
-
                         min_rate = Math.min(record.Rate, min_rate);
 
-
-                        total = total + record.Quantity
+                        total += record.Quantity
                         buy_records.push({rate: record.Rate, value: total})
+
                         return total
                     }, 0)
 
@@ -68,7 +64,7 @@ Item {
 
                         max_rate = Math.max(record.Rate, max_rate);
 
-                        total = total + record.Quantity
+                        total += record.Quantity
                         sell_records.push({rate: record.Rate, value: total})
 
                         return total
@@ -82,11 +78,12 @@ Item {
 
                     buy_series.clear()
                     sell_series.clear()
-                    Lodash._(buy_records).sortBy('rate').each(function (record) {
+
+                    Lodash._.each(buy_records, function (record) {
                         buy_series.append(record.rate, record.value)
                     })
 
-                    Lodash._(sell_records).sortBy('rate').each(function (record) {
+                    Lodash._.each(sell_records, function (record) {
                         sell_series.append(record.rate, record.value)
                     })
                 }
@@ -137,6 +134,8 @@ Item {
             borderColor: "#282"
             borderWidth: 1
 
+            useOpenGL: true
+
             upperSeries: LineSeries {
                 pointsVisible: true
 
@@ -151,6 +150,8 @@ Item {
             color: "#e9938a"
             borderColor: "#822"
             borderWidth: 1
+
+            useOpenGL: true
 
             upperSeries: LineSeries {
                 pointsVisible: true

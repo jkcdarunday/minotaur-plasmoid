@@ -18,5 +18,9 @@
       <label>Exchange</label>
       <default>Bittrex</default>
     </entry>
+    <entry name="interval" type="Int">
+      <label>Interval</label>
+      <default>10000</default>
+    </entry>
   </group>
 </kcfg>

@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
+import QtQuick.Controls 2.5
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import QtQuick.Layouts 1.1
@@ -11,16 +11,17 @@ Item {
 
     property alias cfg_base: base_field.text
     property alias cfg_target: target_field.text
+    property alias cfg_interval: interval_field.value
 
     Grid {
         Layout.fillWidth: true
         columns: 2
 
-        PlasmaComponents.Label {
+        Label {
             text: "Base Currency"
         }
 
-        PlasmaComponents.TextField {
+        TextField {
             id: base_field
 
             placeholderText: "BTC"
@@ -28,11 +29,11 @@ Item {
             text: base_currency
         }
 
-        PlasmaComponents.Label {
+        Label {
             text: "Target Currency"
         }
 
-        PlasmaComponents.TextField {
+        TextField {
             id: target_field
 
             placeholderText: "MTL"
@@ -40,11 +41,11 @@ Item {
             text: target_currency
         }
 
-        PlasmaComponents.Label {
+        Label {
             text: "Exchange"
         }
 
-        PlasmaComponents.ComboBox {
+        ComboBox {
             id: current_exchange;
 
             model: ListModel {
@@ -53,6 +54,20 @@ Item {
 
             currentIndex: function() {
                 return this.find(cfg_exchange);
+            }
+        }
+
+        Label {
+            text: "Interval"
+        }
+
+        SpinBox {
+            id: interval_field
+            from: 0
+            to: 30000
+            stepSize: 500
+            textFromValue: function(value) {
+                return `${value} ms`;
             }
         }
     }

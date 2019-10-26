@@ -32,7 +32,7 @@ Item {
 
         running: false
         triggeredOnStart: true
-        interval: 10000
+        interval: plasmoid.configuration.interval
         repeat: true
         property int lastRequestId: 0
 

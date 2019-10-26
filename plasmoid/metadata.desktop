@@ -10,8 +10,8 @@ X-Plasma-MainScript=ui/main.qml
 X-KDE-PluginInfo-Author=Jan Keith Darunday
 X-KDE-PluginInfo-Email=jkcdarunday@gmail.com
 X-KDE-PluginInfo-License=MIT
-X-KDE-PluginInfo-Name=org.kde.plasma.minotaur
-X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Name=com.keithdarunday.minotaur
+X-KDE-PluginInfo-Version=0.2
 X-KDE-PluginInfo-Website=https://github.com/jkcdarunday/minotaur-plasmoid
 X-KDE-PluginInfo-Category=Online Services
 

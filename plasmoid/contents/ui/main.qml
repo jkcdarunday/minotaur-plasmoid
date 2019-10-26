@@ -38,7 +38,7 @@ Item {
 
         onTriggered: function () {
             var exchange = market_functions.markets[market.exchange];
-            var url = exchange.url.replace('{}', market.base + '-' + market.target)
+            var url = exchange.url.replace('{base}', market.base).replace('{target}', market.target)
 
             request({
                 url: url,
@@ -83,7 +83,7 @@ Item {
         id: market_functions
         property var markets: {
             "Bittrex": {
-                url: 'https://bittrex.com/api/v1.1/public/getmarketsummary?market={}',
+                url: 'https://bittrex.com/api/v1.1/public/getmarketsummary?market={base}-{target}',
                 parser: function(result) {
                     var data
 
@@ -102,7 +102,10 @@ Item {
                     market_value.last = data.result[0].Last
                     market_value.high = data.result[0].High
                     market_value.low = data.result[0].Low
-                    market_value.last_day = data.result[0].PrevDay
+
+                    const prevDay = data.result[0].PrevDay;
+                    market_value.day_change = 100.0 * (market_value.last - prevDay) / market_value.last
+
                     market_value.last_update = new Date().toLocaleTimeString()
 
                     last_update.color = last_update.default_color
@@ -113,6 +116,37 @@ Item {
 
                     market.display_base = market_name[0]
                     market.display_target = market_name[1]
+                }
+            },
+            "Binance": {
+                url: 'https://api.binance.com/api/v3/ticker/24hr?symbol={target}{base}',
+                parser: function(result) {
+                    var data
+
+                    try {
+                        data = JSON.parse(result)
+                    } catch (exception) {
+                        console.log(exception)
+                        return
+                    }
+
+                    if (!data.lastPrice) {
+                        console.log('Binance returned unsuccessful');
+                        return
+                    }
+
+                    market_value.last = data.lastPrice
+                    market_value.high = data.highPrice
+                    market_value.low = data.lowPrice
+                    market_value.day_change = data.priceChangePercent
+                    market_value.last_update = new Date().toLocaleTimeString()
+
+                    last_update.color = last_update.default_color
+
+                    market.display_exchange = 'Binance'
+
+                    market.display_base = market.base
+                    market.display_target = market.target
                 }
             }
         }
@@ -133,8 +167,7 @@ Item {
         property double last: 0.0
         property double high: 0.1
         property double low: 0.0
-        property double last_day: 0.1
-        property double day_change: 100.0*(market_value.last - market_value.last_day)/market_value.last
+        property double day_change: 0
         property string last_update: ""
 
     }

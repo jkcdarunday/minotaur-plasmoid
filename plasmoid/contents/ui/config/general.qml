@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.1
 Item {
     Layout.fillWidth: true
 
-    property string cfg_exchange: "Bittrex"
+    property string cfg_exchange
 
     property alias cfg_base: base_field.text
     property alias cfg_target: target_field.text
@@ -48,13 +48,17 @@ Item {
         ComboBox {
             id: current_exchange;
 
-            model: ListModel {
-                ListElement { text: "Bittrex" }
+            function getCurrentExchangeId() {
+                return current_exchange.find(cfg_exchange);
             }
 
-            currentIndex: function() {
-                return this.find(cfg_exchange);
+            model: ['Bittrex', 'Binance']
+
+            onActivated: function(index) {
+                cfg_exchange = current_exchange.currentText;
             }
+
+            currentIndex: getCurrentExchangeId()
         }
 
         Label {

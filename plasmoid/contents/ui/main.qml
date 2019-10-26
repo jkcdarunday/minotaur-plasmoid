@@ -34,12 +34,11 @@ Item {
         triggeredOnStart: true
         interval: 10000
         repeat: true
+        property int lastRequestId: 0
+
         onTriggered: function () {
             var exchange = market_functions.markets[market.exchange];
             var url = exchange.url.replace('{}', market.base + '-' + market.target)
-
-
-            console.log('Doing request: ', url);
 
             request({
                 url: url,
@@ -53,6 +52,10 @@ Item {
         }
 
         function request (options) {
+            const requestId = ++retriever.lastRequestId;
+
+            console.log(`Doing request ${requestId}: ${options.url}`);
+
             var xhr = new XMLHttpRequest();
 
             xhr.timeout = Math.min(options.timeout, 5000);
@@ -60,6 +63,8 @@ Item {
                 if (xhr.readyState !== XMLHttpRequest.DONE) {
                     return;
                 }
+
+                console.log(`Request ${requestId} finished`);
 
                 if (xhr.status == 200) {
                    return options.success(xhr.responseText);

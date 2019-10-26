@@ -5,9 +5,8 @@ import QtQuick.Layouts 1.1
 Item {
     id: root
 
-    Layout.minimumWidth: main_column.width
-    Layout.minimumHeight: main_column.height
-    height: main_column.height
+    Layout.minimumWidth: 250
+    Layout.minimumHeight: 90
 
     Connections {
         target: plasmoid.configuration
@@ -172,10 +171,19 @@ Item {
 
     }
 
-    Column {
+    GridLayout {
         id: main_column
 
-        spacing: 5
+        columns: 1
+
+        anchors {
+                top: parent.top
+                right: parent.right
+                bottom: parent.bottom
+                left: parent.left
+                leftMargin: 5
+                rightMargin: 5
+        }
 
         Row {
             spacing: 3
@@ -208,22 +216,26 @@ Item {
             }
         }
 
-        Row {
-            spacing: 10
-
-            height: value_metrics.tightBoundingRect.height
+        Item {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
             PlasmaComponents.Label {
                 id: value
+
+                height: parent.height
+                width: parent.width - value_label.width
+
                 text: market_value.last
                     .toFixed(
                         Math.max(9 - market_value.last.toFixed(0).length, 0)
                     )
                     .toLocaleString()
 
-                font.pointSize: 24
+                font.pointSize: 100
+                minimumPointSize: 24
 
-                height: parent.height
+                fontSizeMode: Text.Fit
 
                 TextMetrics {
                     id: value_metrics
@@ -232,15 +244,17 @@ Item {
                 }
             }
 
-
-
             Column {
-                height: parent.height
-                spacing: 0
+                id: value_label
+
+                height: value.contentHeight
+                anchors.left: value.left
+                anchors.leftMargin: value.contentWidth + 5
+                anchors.rightMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
 
                 PlasmaComponents.Label {
                     text: market.display_base
-                    font.pixelSize: parent.height * 3 / 5
                     height: parent.height * 3 / 5
                 }
 
@@ -255,7 +269,6 @@ Item {
                     text: Number(market_value.day_change)
                             .toFixed(2)
                             .toLocaleString() + "%"
-                    font.pixelSize: parent.height * 2 / 5
                     height: parent.height * 2 / 5
                 }
             }

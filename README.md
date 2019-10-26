@@ -12,5 +12,11 @@ To upgrade manually, run the following while in repo directory:
 kpackagetool5 -t Plasma/Applet --upgrade plasmoid
 ```
 
+## Testing
+To test, run the following while in repo directory:
+```
+plasmoidviewer --applet plasmoid
+```
+
 ## Screenshot
 ![Screenshot](assets/screenshot.png)

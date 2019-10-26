@@ -44,6 +44,7 @@ Item {
             request({
                 url: url,
                 success: exchange.parser,
+                timeout: retriever.interval,
                 error: function(error) {
                     console.log('Retrieval returned error:', error)
                     last_update.color = '#F00'
@@ -54,6 +55,7 @@ Item {
         function request (options) {
             var xhr = new XMLHttpRequest();
 
+            xhr.timeout = Math.min(options.timeout, 5000);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState !== XMLHttpRequest.DONE) {
                     return;

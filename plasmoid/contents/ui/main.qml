@@ -31,7 +31,7 @@ Item {
 
         running: false
         triggeredOnStart: true
-        interval: plasmoid.configuration.interval
+        interval: plasmoid.configuration.interval * 1000
         repeat: true
         property int lastRequestId: 0
 

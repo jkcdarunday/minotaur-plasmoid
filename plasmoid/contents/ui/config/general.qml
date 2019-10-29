@@ -67,11 +67,11 @@ Item {
 
         SpinBox {
             id: interval_field
-            from: 0
-            to: 30000
-            stepSize: 500
+            from: 1
+            to: 86400
+            stepSize: 1
             textFromValue: function(value) {
-                return `${value} ms`;
+                return `${value} s`;
             }
         }
     }

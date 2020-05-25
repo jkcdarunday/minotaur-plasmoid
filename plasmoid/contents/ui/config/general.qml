@@ -24,7 +24,7 @@ Item {
         TextField {
             id: base_field
 
-            placeholderText: "BTC"
+            placeholderText: "USD"
 
             text: base_currency
         }
@@ -36,7 +36,7 @@ Item {
         TextField {
             id: target_field
 
-            placeholderText: "MTL"
+            placeholderText: "ETH"
 
             text: target_currency
         }

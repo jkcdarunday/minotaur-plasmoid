@@ -28,7 +28,7 @@ Item {
     }
 
 
-    Row {
+    RowLayout {
         id: main_row
         spacing: 3
         anchors {

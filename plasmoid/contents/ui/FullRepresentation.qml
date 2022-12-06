@@ -51,7 +51,7 @@ Item {
                 text: market.display_base + '-' + market.display_target
                 elide: Text.ElideRight
                 font.weight: Font.Bold
-                font.pixelSize: 11
+                font.pointSize: 8
             }
 
             PlasmaComponents.Label {
@@ -72,7 +72,7 @@ Item {
 
                 text: market_value.last_update
                 elide: Text.ElideRight
-                font.pixelSize: 11
+                font.pointSize: 8
 
                 color: market_value.update_failed ? '#F00' : PlasmaCore.ColorScope.textColor
                 property string default_color: ""
@@ -145,7 +145,7 @@ Item {
             PlasmaComponents.Label {
                 id: low
                 text: "L: " + market_value.low
-                font.pixelSize: 11
+                font.pointSize: 8
             }
 
             Rectangle {
@@ -155,7 +155,7 @@ Item {
             PlasmaComponents.Label {
                 id: high
                 text: "H: " + market_value.high
-                font.pixelSize: 11
+                font.pointSize: 8
             }
         }
     }

@@ -27,7 +27,7 @@ Item {
 //         id: compactView
 //         market_value: market_value
 //         market: market
-// 
+//
 //         anchors {
 //             top: parent.top
 //             right: parent.right
@@ -35,12 +35,12 @@ Item {
 //             left: parent.left
 //         }
 //     }
-// 
+//
 //     TickerView {
 //         id: fullView
 //         market_value: market_value
 //         market: market
-// 
+//
 //         anchors {
 //             top: parent.top
 //             right: parent.right
@@ -167,6 +167,37 @@ Item {
                     market_value.update_failed = false
 
                     market.display_exchange = 'Binance'
+
+                    market.display_base = market.base
+                    market.display_target = market.target
+                }
+            },
+            "Gate.io": {
+                url: 'https://data.gateapi.io/api2/1/ticker/{target}_{base}',
+                parser: function(result) {
+                    var data
+
+                    try {
+                        data = JSON.parse(result)
+                    } catch (exception) {
+                        console.log(exception)
+                        return
+                    }
+
+                    if (!data.last) {
+                        console.log('Gate.io returned unsuccessful');
+                        return
+                    }
+
+                    market_value.last = data.last
+                    market_value.high = data.high24hr
+                    market_value.low = data.low24hr
+                    market_value.day_change = data.percentChange
+                    market_value.last_update = new Date().toLocaleTimeString()
+
+                    market_value.update_failed = false
+
+                    market.display_exchange = 'Gate.io'
 
                     market.display_base = market.base
                     market.display_target = market.target

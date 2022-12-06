@@ -49,7 +49,7 @@ Item {
                 return current_exchange.model.indexOf(cfg_exchange);
             }
 
-            model: ['Bittrex', 'Binance']
+            model: ['Binance', 'Gate.io', 'Bittrex']
 
             onActivated: function(index) {
                 cfg_exchange = current_exchange.currentText;

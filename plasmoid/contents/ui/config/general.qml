@@ -13,9 +13,10 @@ Item {
     property alias cfg_target: target_field.text
     property alias cfg_interval: interval_field.value
 
-    Grid {
+    GridLayout {
         Layout.fillWidth: true
         columns: 2
+        columnSpacing: 10
 
         Label {
             text: "Base Currency"
@@ -23,9 +24,7 @@ Item {
 
         TextField {
             id: base_field
-
-            placeholderText: "USD"
-
+            placeholderText: "USDT"
             text: base_currency
         }
 
@@ -35,9 +34,7 @@ Item {
 
         TextField {
             id: target_field
-
             placeholderText: "ETH"
-
             text: target_currency
         }
 
@@ -49,7 +46,7 @@ Item {
             id: current_exchange;
 
             function getCurrentExchangeId() {
-                return current_exchange.find(cfg_exchange);
+                return current_exchange.model.indexOf(cfg_exchange);
             }
 
             model: ['Bittrex', 'Binance']

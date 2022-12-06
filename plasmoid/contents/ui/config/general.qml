@@ -67,9 +67,8 @@ Item {
             from: 1
             to: 86400
             stepSize: 1
-            textFromValue: function(value) {
-                return `${value} s`;
-            }
+            textFromValue: value => `${value} s`
+            valueFromText: text => parseInt(text)
         }
     }
 }

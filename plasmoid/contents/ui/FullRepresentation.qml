@@ -4,8 +4,8 @@ import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
-    Layout.minimumWidth: 250
-    Layout.minimumHeight: 90
+    Layout.minimumWidth: 220
+    Layout.minimumHeight: 70
 
     property QtObject market;
     property QtObject market_value;
@@ -35,7 +35,7 @@ Item {
             rightMargin: 5
         }
 
-        Row {
+        RowLayout {
             spacing: 3
 
             PlasmaComponents.Label {
@@ -47,6 +47,8 @@ Item {
 
             PlasmaComponents.Label {
                 text: "|"
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
             }
 
             PlasmaComponents.Label {
@@ -56,6 +58,8 @@ Item {
 
             PlasmaComponents.Label {
                 text: "|"
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
             }
 
             PlasmaComponents.Label {
@@ -68,7 +72,7 @@ Item {
             }
         }
 
-        Item {
+        Row {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
@@ -126,12 +130,16 @@ Item {
             }
         }
 
-        Row {
+        RowLayout {
             spacing: 10
 
             PlasmaComponents.Label {
                 id: low
                 text: "L:" + market_value.low
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
             }
 
             PlasmaComponents.Label {

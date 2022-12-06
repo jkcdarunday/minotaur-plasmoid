@@ -61,44 +61,64 @@ Item {
 
         onTriggered: function () {
             var exchange = market_functions.markets[market.exchange];
-            var url = exchange.url.replace('{base}', market.base).replace('{target}', market.target)
+            const urls = [];
 
-            request({
-                url: url,
-                success: exchange.parser,
-                timeout: retriever.interval,
-                error: function(error) {
-                    console.log('Retrieval returned error:', error)
-                    market_value.update_failed = true
-                }
-            });
+            if (exchange.url) {
+                urls.push(exchange.url);
+            }
+
+            if (exchange.urls) {
+                exchange.urls.forEach(url => urls.push(url));
+            }
+
+            const processedUrls = urls.map(
+                (url) => url.replace('{base}', market.base).replace('{target}', market.target)
+            );
+
+            Promise.all(processedUrls.map(
+                (url) => request({
+                    url: url,
+                    success: exchange.parser,
+                    timeout: retriever.interval,
+                }).then((data) => JSON.parse(data))
+            ))
+                .then(exchange.parser)
+                .catch(
+                    function(error) {
+                        console.log('Retrieval returned error:', error)
+                        market_value.update_failed = true
+                        throw error;
+                    }
+                );
         }
 
         function request (options) {
-            const requestId = ++retriever.lastRequestId;
+            return new Promise((resolve, reject) => {
+                const requestId = ++retriever.lastRequestId;
 
-            console.log(`Doing request ${requestId}: ${options.url}`);
+                console.log(`Doing request ${requestId}: ${options.url}`);
 
-            var xhr = new XMLHttpRequest();
+                var xhr = new XMLHttpRequest();
 
-            xhr.timeout = Math.min(options.timeout, 5000);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState !== XMLHttpRequest.DONE) {
-                    return;
+                xhr.timeout = Math.min(() => reject('Timed out'), 5000);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState !== XMLHttpRequest.DONE) {
+                        return;
+                    }
+
+                    console.log(`Request ${requestId} finished`);
+
+                    if (xhr.status == 200) {
+                        return resolve(xhr.responseText);
+                    }
+
+                    return reject(xhr.responseText);
                 }
 
-                console.log(`Request ${requestId} finished`);
+                xhr.open(options.method || 'GET', options.url, true);
 
-                if (xhr.status == 200) {
-                   return options.success(xhr.responseText);
-                }
-
-                return options.error(xhr.responseText);
-            }
-
-            xhr.open(options.method || 'GET', options.url, true);
-
-            xhr.send();
+                xhr.send();
+            })
         }
     }
 
@@ -106,28 +126,24 @@ Item {
         id: market_functions
         property var markets: {
             "Bittrex": {
-                url: 'https://bittrex.com/api/v1.1/public/getmarketsummary?market={base}-{target}',
-                parser: function(result) {
-                    var data
+                urls: [
+                    'https://api.bittrex.com/v3/markets/{target}-{base}/summary',
+                    'https://api.bittrex.com/v3/markets/{target}-{base}/ticker',
+                ],
+                parser: function(results) {
+                    const data = results[0];
+                    const lastPrice = results[1].lastTradeRate;
 
-                    try {
-                        data = JSON.parse(result)
-                    } catch (exception) {
-                        console.log(exception)
+                    if (!data.symbol || !lastPrice) {
+                        console.log('Bittrex returned no symbol or last price');
                         return
                     }
 
-                    if (!data.success) {
-                        console.log('Bittrex returned unsuccessful');
-                        return
-                    }
+                    market_value.last = lastPrice
+                    market_value.high = data.high
+                    market_value.low = data.low
 
-                    market_value.last = data.result[0].Last
-                    market_value.high = data.result[0].High
-                    market_value.low = data.result[0].Low
-
-                    const prevDay = data.result[0].PrevDay;
-                    market_value.day_change = 100.0 * (market_value.last - prevDay) / market_value.last
+                    market_value.day_change = data.percentChange
 
                     market_value.last_update = new Date().toLocaleTimeString()
 
@@ -135,7 +151,7 @@ Item {
 
                     market.display_exchange = "Bittrex"
 
-                    var market_name = data.result[0].MarketName.split('-')
+                    var market_name = data.symbol.split('-')
 
                     market.display_base = market_name[0]
                     market.display_target = market_name[1]
@@ -143,15 +159,8 @@ Item {
             },
             "Binance": {
                 url: 'https://api.binance.com/api/v3/ticker/24hr?symbol={target}{base}',
-                parser: function(result) {
-                    var data
-
-                    try {
-                        data = JSON.parse(result)
-                    } catch (exception) {
-                        console.log(exception)
-                        return
-                    }
+                parser: function(results) {
+                    const data = results[0];
 
                     if (!data.lastPrice) {
                         console.log('Binance returned unsuccessful');
@@ -174,15 +183,8 @@ Item {
             },
             "Gate.io": {
                 url: 'https://data.gateapi.io/api2/1/ticker/{target}_{base}',
-                parser: function(result) {
-                    var data
-
-                    try {
-                        data = JSON.parse(result)
-                    } catch (exception) {
-                        console.log(exception)
-                        return
-                    }
+                parser: function(results) {
+                    const data = results[0];
 
                     if (!data.last) {
                         console.log('Gate.io returned unsuccessful');

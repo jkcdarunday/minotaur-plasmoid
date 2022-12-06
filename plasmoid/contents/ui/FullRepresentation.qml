@@ -21,10 +21,8 @@ Item {
         id: engine
     }
 
-    GridLayout {
+    ColumnLayout {
         id: main_column
-
-        columns: 1
 
         anchors {
             top: parent.top
@@ -35,39 +33,48 @@ Item {
             rightMargin: 5
         }
 
+        Layout.maximumWidth: parent.width
+
         RowLayout {
+            id: topSection
             spacing: 3
+
+            clip: true
+            Layout.maximumWidth: parent.width
 
             PlasmaComponents.Label {
                 id: base
-                text: market.display_base + '-' + market.display_target
 
-                font.weight: Font.Bold
-            }
-
-            PlasmaComponents.Label {
-                text: "|"
                 Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
+                Layout.preferredWidth: parent.width / 2 - exchange.width
+
+                text: market.display_base + '-' + market.display_target
+                elide: Text.ElideRight
+                font.weight: Font.Bold
+                font.pixelSize: 11
             }
 
             PlasmaComponents.Label {
                 id: exchange
-                text: market.display_exchange
-            }
 
-            PlasmaComponents.Label {
-                text: "|"
-                Layout.fillWidth: true
                 horizontalAlignment: Text.AlignHCenter
+
+                text: market.display_exchange
+                elide: Text.ElideRight
             }
 
             PlasmaComponents.Label {
                 id: last_update
+
+                Layout.fillWidth: true
+                Layout.preferredWidth: parent.width / 2 - exchange.width
+                horizontalAlignment: Text.AlignRight
+
                 text: market_value.last_update
+                elide: Text.ElideRight
+                font.pixelSize: 11
 
                 color: market_value.update_failed ? '#F00' : PlasmaCore.ColorScope.textColor
-
                 property string default_color: ""
             }
         }
@@ -133,9 +140,12 @@ Item {
         RowLayout {
             spacing: 10
 
+            Layout.preferredHeight: topSection.height
+
             PlasmaComponents.Label {
                 id: low
-                text: "L:" + market_value.low
+                text: "L: " + market_value.low
+                font.pixelSize: 11
             }
 
             Rectangle {
@@ -144,7 +154,8 @@ Item {
 
             PlasmaComponents.Label {
                 id: high
-                text: "H:" + market_value.high
+                text: "H: " + market_value.high
+                font.pixelSize: 11
             }
         }
     }

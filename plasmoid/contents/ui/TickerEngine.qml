@@ -182,7 +182,7 @@ Item {
                 }
             },
             "Gate.io": {
-                url: 'https://data.gateapi.io/api2/1/ticker/{target}_{base}',
+                url: 'https://api.gateio.ws/api/v4/spot/tickers?currency_pair={target}_{base}',
                 parser: function(results) {
                     const data = results[0];
 
@@ -192,9 +192,9 @@ Item {
                     }
 
                     market_value.last = data.last
-                    market_value.high = data.high24hr
-                    market_value.low = data.low24hr
-                    market_value.day_change = data.percentChange
+                    market_value.high = data.high_24h
+                    market_value.low = data.low_24h
+                    market_value.day_change = data.change_percentage
                     market_value.last_update = new Date().toLocaleTimeString()
 
                     market_value.update_failed = false

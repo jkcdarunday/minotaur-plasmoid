@@ -184,7 +184,7 @@ Item {
             "Gate.io": {
                 url: 'https://api.gateio.ws/api/v4/spot/tickers?currency_pair={target}_{base}',
                 parser: function(results) {
-                    const data = results[0];
+                    const data = results[0][0];
 
                     if (!data.last) {
                         console.log('Gate.io returned unsuccessful');

@@ -105,21 +105,25 @@ Item {
                     font: value.font
                     text: value.text
                 }
+
+                verticalAlignment: Text.AlignVCenter
             }
 
-            Column {
+            ColumnLayout {
                 id: value_label
-
-                height: value.contentHeight
+                height: value.contentHeight * 0.6
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 0
 
                 PlasmaComponents.Label {
                     text: market.display_base
-                    height: parent.height * 3 / 5
+                    Layout.alignment: Qt.AlignTop
+                    font.pointSize: value.contentHeight > 50 ? 10 : 8
                 }
 
                 PlasmaComponents.Label {
-
                     id: change
+                    Layout.alignment: Qt.AlignBottom
                     color: market_value.day_change > 0
                             ? "#090"
                             : market_value.day_change < 0
@@ -128,7 +132,7 @@ Item {
                     text: Number(market_value.day_change)
                             .toFixed(2)
                             .toLocaleString() + "%"
-                    height: parent.height * 2 / 5
+                    font.pointSize: value.contentHeight > 50 ? 10 : 8
                 }
             }
         }

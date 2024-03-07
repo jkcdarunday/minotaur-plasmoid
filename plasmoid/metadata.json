@@ -1,0 +1,21 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "jkcdarunday@gmail.com",
+                "Name": "Jan Keith Darunday"
+            }
+        ],
+        "Category": "Online Services",
+        "Description": "A KDE Plasma 6 Plasmoid for monitoring cryptocurrency exchange rates on various exchanges",
+        "Id": "com.keithdarunday.minotaur",
+        "License": "MIT",
+        "Name": "Minotaur",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "0.3.0",
+        "Website": "https://github.com/jkcdarunday/minotaur-plasmoid"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

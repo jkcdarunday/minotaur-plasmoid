@@ -1,6 +1,6 @@
-import QtQuick 2.4
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import QtQuick.Layouts 1.1
+import QtQuick 6.0
+import QtQuick.Layouts 6.0
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
@@ -74,7 +74,7 @@ Item {
                 elide: Text.ElideRight
                 font.pointSize: 8
 
-                color: market_value.update_failed ? '#F00' : PlasmaCore.ColorScope.textColor
+                color: market_value.update_failed ? '#F00' : PlasmaCore.Theme.textColor
                 property string default_color: ""
             }
         }
@@ -111,10 +111,6 @@ Item {
                 id: value_label
 
                 height: value.contentHeight
-                anchors.left: value.left
-                anchors.leftMargin: value.contentWidth + 5
-                anchors.rightMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
 
                 PlasmaComponents.Label {
                     text: market.display_base

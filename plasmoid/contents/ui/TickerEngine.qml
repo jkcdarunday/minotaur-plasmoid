@@ -92,15 +92,25 @@ Item {
                 );
         }
 
+        property var previousRequest: null
+
         function request (options) {
             return new Promise((resolve, reject) => {
                 const requestId = ++retriever.lastRequestId;
 
                 console.log(`Doing request ${requestId}: ${options.url}`);
 
-                var xhr = new XMLHttpRequest();
+                // Abort previous XHR if still running
+                if (retriever.previousRequest && retriever.previousRequest.readyState !== XMLHttpRequest.DONE) {
+                    console.log('Aborting previous request');
+                    retriever.previousRequest.abort();
+                }
 
-                xhr.timeout = Math.min(() => reject('Timed out'), 5000);
+                var xhr = new XMLHttpRequest();
+                retriever.previousRequest = xhr;
+
+                xhr.timeout = options.timeout || 5000;
+
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState !== XMLHttpRequest.DONE) {
                         return;
@@ -113,6 +123,16 @@ Item {
                     }
 
                     return reject(xhr.responseText);
+                }
+
+                xhr.ontimeout = function() {
+                    console.log(`Request ${requestId} timed out`);
+                    reject('Timed out');
+                }
+
+                xhr.onerror = function() {
+                    console.log(`Request ${requestId} encountered an error`);
+                    reject('Network error');
                 }
 
                 xhr.open(options.method || 'GET', options.url, true);

@@ -15,9 +15,15 @@ Item {
     property alias cfg_showTimer: show_timer_check.checked
 
     GridLayout {
-        Layout.fillWidth: true
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.leftMargin: 16
+        anchors.rightMargin: 16
+        anchors.topMargin: 0
         columns: 2
-        columnSpacing: 10
+        columnSpacing: 16
+        rowSpacing: 12
 
         Label {
             text: "Base Currency"
@@ -25,6 +31,7 @@ Item {
 
         TextField {
             id: base_field
+            Layout.fillWidth: true
             placeholderText: "USDT"
             text: base_currency
         }
@@ -35,6 +42,7 @@ Item {
 
         TextField {
             id: target_field
+            Layout.fillWidth: true
             placeholderText: "ETH"
             text: target_currency
         }
@@ -44,7 +52,8 @@ Item {
         }
 
         ComboBox {
-            id: current_exchange;
+            id: current_exchange
+            Layout.fillWidth: true
 
             function getCurrentExchangeId() {
                 return current_exchange.model.indexOf(cfg_exchange);
@@ -65,6 +74,7 @@ Item {
 
         SpinBox {
             id: interval_field
+            Layout.fillWidth: true
             from: 1
             to: 86400
             stepSize: 1

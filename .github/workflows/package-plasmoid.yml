@@ -1,0 +1,40 @@
+name: Package Plasma 6 Plasmoid
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create installable Plasma package
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          (cd plasmoid && zip -qr "../dist/minotaur-plasmoid.plasmoid" .)
+
+      - name: Verify archive contents
+        run: unzip -l dist/minotaur-plasmoid.plasmoid
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: minotaur-plasmoid-plasma6
+          path: dist/minotaur-plasmoid.plasmoid
+          if-no-files-found: error
+
+      - name: Upload to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/minotaur-plasmoid.plasmoid

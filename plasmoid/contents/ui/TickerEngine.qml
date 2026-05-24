@@ -234,6 +234,30 @@ Item {
                     market.display_target = market.target
                 }
             },
+            "MEXC": {
+                url: 'https://api.mexc.com/api/v3/ticker/24hr?symbol={target}{base}',
+                parser: function(results) {
+                    const data = results[0];
+
+                    if (!data.lastPrice) {
+                        console.log('MEXC returned unsuccessful');
+                        return
+                    }
+
+                    market_value.last = data.lastPrice
+                    market_value.high = data.highPrice
+                    market_value.low = data.lowPrice
+                    market_value.day_change = data.priceChangePercent
+                    market_value.last_update = formatLastUpdate(new Date())
+
+                    market_value.update_failed = false
+
+                    market.display_exchange = 'MEXC'
+
+                    market.display_base = market.base
+                    market.display_target = market.target
+                }
+            },
             "Gate.io": {
                 url: 'https://api.gateio.ws/api/v4/spot/tickers?currency_pair={target}_{base}',
                 parser: function(results) {

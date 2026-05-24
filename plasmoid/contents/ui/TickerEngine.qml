@@ -178,38 +178,6 @@ Item {
     QtObject {
         id: market_functions
         property var markets: {
-            "Bittrex": {
-                urls: [
-                    'https://api.bittrex.com/v3/markets/{target}-{base}/summary',
-                    'https://api.bittrex.com/v3/markets/{target}-{base}/ticker',
-                ],
-                parser: function(results) {
-                    const data = results[0];
-                    const lastPrice = results[1].lastTradeRate;
-
-                    if (!data.symbol || !lastPrice) {
-                        console.log('Bittrex returned no symbol or last price');
-                        return
-                    }
-
-                    market_value.last = lastPrice
-                    market_value.high = data.high
-                    market_value.low = data.low
-
-                    market_value.day_change = data.percentChange
-
-                    market_value.last_update = formatLastUpdate(new Date())
-
-                    market_value.update_failed = false
-
-                    market.display_exchange = "Bittrex"
-
-                    var market_name = data.symbol.split('-')
-
-                    market.display_base = market_name[0]
-                    market.display_target = market_name[1]
-                }
-            },
             "Binance": {
                 url: 'https://api.binance.com/api/v3/ticker/24hr?symbol={target}{base}',
                 parser: function(results) {

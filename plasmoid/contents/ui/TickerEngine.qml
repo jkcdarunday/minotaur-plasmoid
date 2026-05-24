@@ -58,10 +58,21 @@ Item {
         interval: plasmoid.configuration.interval * 1000
         repeat: true
         property int lastRequestId: 0
+        property int pollId: 0
+        property var activeRequests: []
 
         onTriggered: function () {
+            const currentPollId = ++retriever.pollId;
             var exchange = market_functions.markets[market.exchange];
             const urls = [];
+
+            // Cancel any in-flight requests from an older poll cycle.
+            retriever.activeRequests.forEach((xhr) => {
+                if (xhr && xhr.readyState !== XMLHttpRequest.DONE) {
+                    xhr.abort();
+                }
+            });
+            retriever.activeRequests = [];
 
             if (exchange.url) {
                 urls.push(exchange.url);
@@ -80,19 +91,29 @@ Item {
                     url: url,
                     success: exchange.parser,
                     timeout: retriever.interval,
+                    pollId: currentPollId,
                 }).then((data) => JSON.parse(data))
             ))
                 .then(exchange.parser)
                 .catch(
                     function(error) {
+                        // Ignore expected aborts and stale poll errors.
+                        if ((error && error.aborted) || currentPollId !== retriever.pollId) {
+                            return;
+                        }
+
                         console.log('Retrieval returned error:', error)
                         market_value.update_failed = true
-                        throw error;
                     }
                 );
         }
 
-        property var previousRequest: null
+        function removeActiveRequest(xhr) {
+            const index = retriever.activeRequests.indexOf(xhr);
+            if (index >= 0) {
+                retriever.activeRequests.splice(index, 1);
+            }
+        }
 
         function request (options) {
             return new Promise((resolve, reject) => {
@@ -100,14 +121,8 @@ Item {
 
                 console.log(`Doing request ${requestId}: ${options.url}`);
 
-                // Abort previous XHR if still running
-                if (retriever.previousRequest && retriever.previousRequest.readyState !== XMLHttpRequest.DONE) {
-                    console.log('Aborting previous request');
-                    retriever.previousRequest.abort();
-                }
-
                 var xhr = new XMLHttpRequest();
-                retriever.previousRequest = xhr;
+                retriever.activeRequests.push(xhr);
 
                 xhr.timeout = options.timeout || 5000;
 
@@ -116,21 +131,30 @@ Item {
                         return;
                     }
 
+                    removeActiveRequest(xhr);
+
                     console.log(`Request ${requestId} finished`);
 
-                    if (xhr.status == 200) {
+                    if (xhr.status === 200) {
                         return resolve(xhr.responseText);
                     }
 
                     return reject(xhr.responseText);
                 }
 
+                xhr.onabort = function() {
+                    removeActiveRequest(xhr);
+                    reject({ aborted: true, requestId: requestId });
+                }
+
                 xhr.ontimeout = function() {
+                    removeActiveRequest(xhr);
                     console.log(`Request ${requestId} timed out`);
                     reject('Timed out');
                 }
 
                 xhr.onerror = function() {
+                    removeActiveRequest(xhr);
                     console.log(`Request ${requestId} encountered an error`);
                     reject('Network error');
                 }

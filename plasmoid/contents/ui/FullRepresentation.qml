@@ -39,16 +39,37 @@ Item {
             clip: true
             Layout.maximumWidth: parent.width
 
-            PlasmaComponents.Label {
-                id: base
+            RowLayout {
+                spacing: 3
 
+                PlasmaComponents.Label {
+                    id: base
+
+                    text: market.display_base + '-' + market.display_target
+                    elide: Text.ElideRight
+                    font.weight: Font.Bold
+                    font.pointSize: 7
+                }
+
+                PieTimer {
+                    id: pieTimer
+                    visible: plasmoid.configuration.showTimer
+                    totalInterval: engine.retrieverRef.interval
+                    elapsedTime: {
+                        var elapsed = (Date.now() - engine.retrieverRef.lastTriggered) % engine.retrieverRef.interval;
+                        return Math.max(0, elapsed);
+                    }
+
+                    Layout.preferredWidth: 8
+                    Layout.preferredHeight: 8
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.maximumWidth: visible ? 8 : 0
+                    Layout.maximumHeight: visible ? 8 : 0
+                }
+            }
+
+            Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width / 2 - exchange.width
-
-                text: market.display_base + '-' + market.display_target
-                elide: Text.ElideRight
-                font.weight: Font.Bold
-                font.pointSize: 7
             }
 
             PlasmaComponents.Label {
@@ -60,11 +81,13 @@ Item {
                 elide: Text.ElideRight
             }
 
+            Rectangle {
+                Layout.fillWidth: true
+            }
+
             PlasmaComponents.Label {
                 id: last_update
 
-                Layout.fillWidth: true
-                Layout.preferredWidth: parent.width / 2 - exchange.width
                 horizontalAlignment: Text.AlignRight
 
                 text: market_value.last_update
@@ -83,15 +106,15 @@ Item {
             }
         }
 
-        Row {
+        RowLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
             PlasmaComponents.Label {
                 id: value
 
-                height: parent.height
-                width: parent.width - value_label.width
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
                 text: market_value.last
                     .toFixed(
@@ -115,8 +138,8 @@ Item {
 
             ColumnLayout {
                 id: value_label
-                height: value.contentHeight * 0.6
-                anchors.verticalCenter: parent.verticalCenter
+                Layout.preferredHeight: value.contentHeight * 0.6
+                Layout.alignment: Qt.AlignVCenter
                 spacing: 0
 
                 PlasmaComponents.Label {

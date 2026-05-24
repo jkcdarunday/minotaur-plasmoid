@@ -62,5 +62,21 @@ Item {
             minimumPointSize: 12
             text: market.display_target
         }
+
+        PieTimer {
+            id: pieTimer
+            visible: plasmoid.configuration.showTimer
+            totalInterval: engine.retrieverRef.interval
+            elapsedTime: {
+                var elapsed = (Date.now() - engine.retrieverRef.lastTriggered) % engine.retrieverRef.interval;
+                return Math.max(0, elapsed);
+            }
+
+            Layout.preferredWidth: 8
+            Layout.preferredHeight: 8
+            Layout.alignment: Qt.AlignVCenter
+            Layout.maximumWidth: visible ? 8 : 0
+            Layout.maximumHeight: visible ? 8 : 0
+        }
     }
 }

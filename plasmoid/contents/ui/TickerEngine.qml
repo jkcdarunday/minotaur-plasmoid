@@ -7,6 +7,7 @@ Item {
 
     property QtObject market_value: market_value
     property QtObject market: market
+    property var retrieverRef: retriever  // Expose timer for UI components
 
     function formatLastUpdate(date) {
         try {
@@ -69,8 +70,10 @@ Item {
         property int lastRequestId: 0
         property int pollId: 0
         property var activeRequests: []
+        property var lastTriggered: Date.now()
 
         onTriggered: function () {
+            retriever.lastTriggered = Date.now();
             const currentPollId = ++retriever.pollId;
             var exchange = market_functions.markets[market.exchange];
             const urls = [];

@@ -12,6 +12,7 @@ Item {
     property alias cfg_base: base_field.text
     property alias cfg_target: target_field.text
     property alias cfg_interval: interval_field.value
+    property alias cfg_showTimer: show_timer_check.checked
 
     GridLayout {
         Layout.fillWidth: true
@@ -69,6 +70,14 @@ Item {
             stepSize: 1
             textFromValue: value => `${value} s`
             valueFromText: text => parseInt(text)
+        }
+
+        Label {
+            text: "Show Timer"
+        }
+
+        CheckBox {
+            id: show_timer_check
         }
     }
 }

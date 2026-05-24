@@ -22,5 +22,9 @@
       <label>Interval</label>
       <default>60</default>
     </entry>
+    <entry name="showTimer" type="Bool">
+      <label>Show Timer</label>
+      <default>true</default>
+    </entry>
   </group>
 </kcfg>

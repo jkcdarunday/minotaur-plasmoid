@@ -1,7 +1,6 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
 import org.kde.plasma.components 3.0 as PlasmaComponents
-import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
     Layout.minimumWidth: 220
@@ -11,8 +10,6 @@ Item {
     property QtObject market_value;
 
     Component.onCompleted: function () {
-        last_update.default_color = last_update.color
-
         market = engine.market
         market_value = engine.market_value
     }
@@ -74,8 +71,15 @@ Item {
                 elide: Text.ElideRight
                 font.pointSize: 8
 
-                color: market_value.update_failed ? '#F00' : PlasmaCore.Theme.textColor
-                property string default_color: ""
+                states: State {
+                    name: "updateFailed"
+                    when: market_value.update_failed
+
+                    PropertyChanges {
+                        target: last_update
+                        color: "#F00"
+                    }
+                }
             }
         }
 

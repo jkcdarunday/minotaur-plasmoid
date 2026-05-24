@@ -48,7 +48,7 @@ Item {
                 text: market.display_base + '-' + market.display_target
                 elide: Text.ElideRight
                 font.weight: Font.Bold
-                font.pointSize: 8
+                font.pointSize: 7
             }
 
             PlasmaComponents.Label {
@@ -69,7 +69,7 @@ Item {
 
                 text: market_value.last_update
                 elide: Text.ElideRight
-                font.pointSize: 8
+                font.pointSize: 7
 
                 states: State {
                     name: "updateFailed"

@@ -8,6 +8,15 @@ Item {
     property QtObject market_value: market_value
     property QtObject market: market
 
+    function formatLastUpdate(date) {
+        try {
+            return Qt.formatDateTime(date, 'h:mm:ss AP t');
+        } catch (error) {
+            console.log('Falling back to default time formatting:', error);
+            return date.toLocaleTimeString();
+        }
+    }
+
     Component.onCompleted: function () {
         retriever.start()
     }
@@ -189,7 +198,7 @@ Item {
 
                     market_value.day_change = data.percentChange
 
-                    market_value.last_update = new Date().toLocaleTimeString()
+                    market_value.last_update = formatLastUpdate(new Date())
 
                     market_value.update_failed = false
 
@@ -215,7 +224,7 @@ Item {
                     market_value.high = data.highPrice
                     market_value.low = data.lowPrice
                     market_value.day_change = data.priceChangePercent
-                    market_value.last_update = new Date().toLocaleTimeString()
+                    market_value.last_update = formatLastUpdate(new Date())
 
                     market_value.update_failed = false
 
@@ -239,7 +248,7 @@ Item {
                     market_value.high = data.high_24h
                     market_value.low = data.low_24h
                     market_value.day_change = data.change_percentage
-                    market_value.last_update = new Date().toLocaleTimeString()
+                    market_value.last_update = formatLastUpdate(new Date())
 
                     market_value.update_failed = false
 

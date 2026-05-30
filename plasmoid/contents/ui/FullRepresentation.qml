@@ -42,13 +42,26 @@ Item {
             RowLayout {
                 spacing: 3
 
-                PlasmaComponents.Label {
-                    id: base
+                MouseArea {
+                    id: marketNameArea
+                    Layout.preferredWidth: base.implicitWidth
+                    Layout.preferredHeight: base.implicitHeight
+                    cursorShape: Qt.PointingHandCursor
 
-                    text: market.display_base + '-' + market.display_target
-                    elide: Text.ElideRight
-                    font.weight: Font.Bold
-                    font.pointSize: 7
+                    onClicked: {
+                        if (market.trade_url) {
+                            Qt.openUrlExternally(market.trade_url);
+                        }
+                    }
+
+                    PlasmaComponents.Label {
+                        id: base
+
+                        text: market.display_base + '-' + market.display_target
+                        elide: Text.ElideRight
+                        font.weight: Font.Bold
+                        font.pointSize: 7
+                    }
                 }
 
                 PieTimer {

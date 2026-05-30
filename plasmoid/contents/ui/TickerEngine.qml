@@ -183,6 +183,7 @@ Item {
         property var markets: {
             "Binance": {
                 url: 'https://api.binance.com/api/v3/ticker/24hr?symbol={target}{base}',
+                tradeUrl: 'https://www.binance.com/en/trade/{target}_{base}',
                 parser: function(results) {
                     const data = results[0];
 
@@ -207,6 +208,7 @@ Item {
             },
             "MEXC": {
                 url: 'https://api.mexc.com/api/v3/ticker/24hr?symbol={target}{base}',
+                tradeUrl: 'https://www.mexc.com/exchange/{target}_{base}',
                 parser: function(results) {
                     const data = results[0];
 
@@ -231,6 +233,7 @@ Item {
             },
             "Gate.io": {
                 url: 'https://api.gateio.ws/api/v4/spot/tickers?currency_pair={target}_{base}',
+                tradeUrl: 'https://www.gate.io/trade/{target}_{base}',
                 parser: function(results) {
                     const data = results[0][0];
 
@@ -260,10 +263,20 @@ Item {
         id: market
         property string base: plasmoid.configuration.base || "BTC"
         property string target: plasmoid.configuration.target || "ETH"
-        property string exchange: plasmoid.configuration.exchange || "Bittrex"
+        property string exchange: plasmoid.configuration.exchange || "Binance"
         property string display_base: ""
         property string display_target: ""
         property string display_exchange: ""
+
+        property string trade_url: {
+            const exchangeData = market_functions.markets[market.exchange];
+            if (exchangeData && exchangeData.tradeUrl) {
+                return exchangeData.tradeUrl
+                    .replace('{base}', market.base)
+                    .replace('{target}', market.target);
+            }
+            return "";
+        }
     }
 
     QtObject {
